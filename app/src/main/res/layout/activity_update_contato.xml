@@ -1,0 +1,85 @@
+<RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".UpdateContato">
+
+    <TextView
+        android:id="@+id/updateContatoHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="16dp"
+        android:text="Editar Contato"
+        android:textColor="@color/azul"
+        android:textSize="24sp" />
+
+    <ImageView
+        android:id="@+id/updateSaveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_done_24"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@id/updateContatoHeader"
+        android:layout_marginEnd="6dp" />
+
+    <EditText
+        android:id="@+id/updateNomeContato"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:hint="Nome"
+        android:padding="12dp"
+        android:textSize="20sp"
+        android:layout_below="@id/updateContatoHeader"
+        android:background="@drawable/borda_azul"
+        android:layout_marginTop="16dp"
+        android:maxLines="1" />
+
+    <EditText
+        android:id="@+id/updateTelefoneContato"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:hint="Número"
+        android:gravity="top"
+        android:padding="12dp"
+        android:textSize="20sp"
+        android:layout_below="@id/updateNomeContato"
+        android:background="@drawable/borda_azul"
+        android:layout_marginTop="16dp"
+        android:maxLines="1" />
+
+    <EditText
+        android:id="@+id/updateTipoContato"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:hint="Tipo"
+        android:gravity="top"
+        android:padding="12dp"
+        android:textSize="20sp"
+        android:layout_below="@id/updateTelefoneContato"
+        android:background="@drawable/borda_azul"
+        android:layout_marginTop="16dp"
+        android:maxLines="1" />
+
+    <LinearLayout
+        android:id="@+id/phoneContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/updateTipoContato"
+        android:orientation="vertical"
+        android:layout_marginTop="12dp" />
+
+    <!--<Button-->
+    <!--    android:id="@+id/addContatoBotao"-->
+    <!--    android:layout_width="wrap_content"-->
+    <!--    android:layout_height="wrap_content"-->
+    <!--    android:layout_below="@id/phoneContainer"-->
+    <!--    android:text="Adicionar Contato"-->
+    <!--    android:layout_marginTop="16dp"-->
+    <!--    android:layout_marginBottom="8dp"-->
+    <!--    android:layout_marginEnd="8dp" />-->
+
+</RelativeLayout>

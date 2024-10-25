@@ -1,0 +1,11 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Contatos" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">@color/azul</item>
+        <item name="colorPrimaryVariant">@color/azul</item>
+        <item name="android:statusBarColor">@color/azul</item>
+    </style>
+
+    <style name="Theme.Contatos" parent="Base.Theme.Contatos" />
+</resources>
