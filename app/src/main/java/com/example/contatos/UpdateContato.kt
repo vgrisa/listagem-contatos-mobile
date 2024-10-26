@@ -30,25 +30,15 @@ class UpdateContato : AppCompatActivity() {
 
         val contact = db.getContactByID(contatoId)
         binding.updateNomeContato.setText(contact.nome)
-        binding.updateTelefoneContato.setText(contact.telefone)
-        binding.updateTipoContato.setText(contact.tipo)
 
         binding.updateSaveButton.setOnClickListener { it: View ->
             val newNome = binding.updateNomeContato.text.toString()
-            val newTelefone = binding.updateTelefoneContato.text.toString()
-            val newTipo = binding.updateTipoContato.text.toString()
 
             if(newNome == null || newNome == ""){
                 Toast.makeText(this, "Campo nome é obrigatorio", Toast.LENGTH_SHORT).show()
             }
-            else if(newTelefone == null || newTelefone == ""){
-                Toast.makeText(this, "Campo telefone é obrigatorio", Toast.LENGTH_SHORT).show()
-            }
-            else if(newTipo == null || newTipo == ""){
-                Toast.makeText(this, "Campo tipo é obrigatorio", Toast.LENGTH_SHORT).show()
-            }
             else{
-                val updatedContato = Contato(contatoId, newNome, newTelefone, newTipo)
+                val updatedContato = Contato(contatoId, newNome)
                 db.updateContact(updatedContato)
                 finish()
                 Toast.makeText(this, "Contato editado com sucesso", Toast.LENGTH_SHORT).show()

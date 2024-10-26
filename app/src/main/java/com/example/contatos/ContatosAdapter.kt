@@ -17,8 +17,6 @@ class ContatosAdapter(private var contatos: List<Contato>, context: Context) :
 
     class ContatoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val nomeTextView: TextView = itemView.findViewById(R.id.nomeTextView)
-        val telefoneTextView: TextView = itemView.findViewById(R.id.telefoneTextView)
-        val tipoTextView: TextView = itemView.findViewById(R.id.tipoTextView)
 
         val updateButton: ImageView = itemView.findViewById(R.id.updateButton)
         val deleteButton: ImageView = itemView.findViewById(R.id.deleteButton)
@@ -34,8 +32,6 @@ class ContatosAdapter(private var contatos: List<Contato>, context: Context) :
     override fun onBindViewHolder(holder: ContatoViewHolder, position: Int) {
         val contato = contatos[position]
         holder.nomeTextView.text = contato.nome
-        holder.telefoneTextView.text =  contato.telefone
-        holder.tipoTextView.text =  contato.tipo
 
         holder.updateButton.setOnClickListener{
             val intent = Intent(holder.itemView.context, UpdateContato::class.java).apply{

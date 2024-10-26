@@ -64,22 +64,29 @@ tools:context=".AddContatos">
         android:layout_marginTop="16dp"
         android:maxLines="1" />
 
+    <Button
+        android:id="@+id/addContatoBotao"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tipoContato"
+        android:text="Adicionar Telefone"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp" />
+
 <LinearLayout
     android:id="@+id/phoneContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_below="@id/tipoContato"
+    android:layout_below="@id/addContatoBotao"
     android:orientation="vertical"
     android:layout_marginTop="12dp" />
 
-<!--<Button-->
-<!--    android:id="@+id/addContatoBotao"-->
-<!--    android:layout_width="wrap_content"-->
-<!--    android:layout_height="wrap_content"-->
-<!--    android:layout_below="@id/phoneContainer"-->
-<!--    android:text="Adicionar Contato"-->
-<!--    android:layout_marginTop="16dp"-->
-<!--    android:layout_marginBottom="8dp"-->
-<!--    android:layout_marginEnd="8dp" />-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/telefonesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/phoneContainer"
+        android:padding="16dp" />
 
 </RelativeLayout>
