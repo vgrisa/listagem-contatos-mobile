@@ -5,10 +5,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".UpdateContato">
+    tools:context=".AddContatos">
 
     <TextView
-        android:id="@+id/updateContatoHeader"
+        android:id="@+id/addContatoHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/baseline_done_24"
         android:layout_alignParentEnd="true"
-        android:layout_alignTop="@id/updateContatoHeader"
+        android:layout_alignTop="@id/addContatoHeader"
         android:layout_marginEnd="6dp" />
 
     <EditText
@@ -33,7 +33,7 @@
         android:hint="Nome"
         android:padding="12dp"
         android:textSize="20sp"
-        android:layout_below="@id/updateContatoHeader"
+        android:layout_below="@id/addContatoHeader"
         android:background="@drawable/borda_azul"
         android:layout_marginTop="16dp"
         android:maxLines="1" />
@@ -64,22 +64,29 @@
         android:layout_marginTop="16dp"
         android:maxLines="1" />
 
+    <Button
+        android:id="@+id/addContatoBotao"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/updateTipoContato"
+        android:text="Adicionar Telefone"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp" />
+
     <LinearLayout
         android:id="@+id/phoneContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/updateTipoContato"
+        android:layout_below="@id/addContatoBotao"
         android:orientation="vertical"
         android:layout_marginTop="12dp" />
 
-    <!--<Button-->
-    <!--    android:id="@+id/addContatoBotao"-->
-    <!--    android:layout_width="wrap_content"-->
-    <!--    android:layout_height="wrap_content"-->
-    <!--    android:layout_below="@id/phoneContainer"-->
-    <!--    android:text="Adicionar Contato"-->
-    <!--    android:layout_marginTop="16dp"-->
-    <!--    android:layout_marginBottom="8dp"-->
-    <!--    android:layout_marginEnd="8dp" />-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/telefonesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/phoneContainer"
+        android:padding="16dp" />
 
 </RelativeLayout>

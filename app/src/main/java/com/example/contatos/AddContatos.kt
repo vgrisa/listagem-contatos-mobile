@@ -30,6 +30,8 @@ class AddContatos : AppCompatActivity() {
 
             if (nome.isBlank()) {
                 Toast.makeText(this, "Campo nome é obrigatório", Toast.LENGTH_SHORT).show()
+            } else if (telefones.isEmpty()) {
+                Toast.makeText(this, "É necessário adicionar pelo menos um telefone", Toast.LENGTH_SHORT).show()
             } else {
                 // Cria o contato sem telefones para primeiro salvar no banco
                 val contato = Contato(0, nome, telefones = emptyList())
@@ -67,7 +69,11 @@ class AddContatos : AppCompatActivity() {
                 telefonesAdapter = TelefoneAdapter(telefones, this)
                 binding.telefonesRecyclerView.layoutManager = LinearLayoutManager(this)
                 binding.telefonesRecyclerView.adapter = telefonesAdapter
+
+                binding.telefoneContato.text.clear()
+                binding.tipoContato.text.clear()
             }
         }
+
     }
 }

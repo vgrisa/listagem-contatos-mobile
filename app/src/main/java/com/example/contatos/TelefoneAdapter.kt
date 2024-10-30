@@ -1,7 +1,6 @@
 package com.example.contatos
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,15 +9,14 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 
-class TelefoneAdapter(private var telefones: List<Telefone>, context: Context) :
+class TelefoneAdapter(private var telefones: MutableList<Telefone>, context: Context) :
     RecyclerView.Adapter<TelefoneAdapter.TelefoneViewHolder>() {
 
     private val db: ContatosDatabase = ContatosDatabase(context)
 
-    class TelefoneViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+    class TelefoneViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val telefoneTextView: TextView = itemView.findViewById(R.id.telefoneTextView)
         val tipoTextView: TextView = itemView.findViewById(R.id.tipoTextView)
-
         val deleteButton: ImageView = itemView.findViewById(R.id.deleteButton)
     }
 
@@ -35,20 +33,19 @@ class TelefoneAdapter(private var telefones: List<Telefone>, context: Context) :
         holder.tipoTextView.text = telefone.tipo
 
         holder.deleteButton.setOnClickListener {
-            val updatedTelefones = telefones.toMutableList()
-            updatedTelefones.removeAt(position)
-
-            refreshData(updatedTelefones)
+            // Remove o telefone da lista e do banco de dados, se necessário
+            telefones.removeAt(position)
+            notifyItemRemoved(position)
+            notifyItemRangeChanged(position, telefones.size)
 
             Toast.makeText(holder.itemView.context, "Telefone removido da lista", Toast.LENGTH_SHORT).show()
         }
     }
 
-
-    private fun refreshData(newPhones: List<Telefone>) {
-        telefones = newPhones
+    // Função para atualizar a lista de telefones (caso seja necessário atualizar toda a lista)
+    fun refreshData(newPhones: List<Telefone>) {
+        telefones.clear()
+        telefones.addAll(newPhones)
         notifyDataSetChanged()
     }
-
-
 }

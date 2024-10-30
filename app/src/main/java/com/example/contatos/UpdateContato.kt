@@ -1,19 +1,19 @@
 package com.example.contatos
 
-import android.R
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.contatos.databinding.ActivityUpdateContatoBinding
-import com.google.android.material.textfield.TextInputLayout
-
 
 class UpdateContato : AppCompatActivity() {
     private lateinit var binding: ActivityUpdateContatoBinding
     private lateinit var db: ContatosDatabase
     private var contatoId: Int = -1
+    private val telefones: MutableList<Telefone> = mutableListOf()
+    private lateinit var telefonesAdapter: TelefoneAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,28 +22,64 @@ class UpdateContato : AppCompatActivity() {
 
         db = ContatosDatabase(this)
 
+        // Recupera o contatoId do Intent
         contatoId = intent.getIntExtra("contato_id", -1)
+
+        // Verifica se o contatoId é válido
         if (contatoId == -1) {
+            Toast.makeText(this, "Contato não encontrado", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
 
+        // Carrega as informações do contato e seus telefones
         val contact = db.getContactByID(contatoId)
-        binding.updateNomeContato.setText(contact.nome)
+        if (contact != null) {
+            binding.updateNomeContato.setText(contact.nome)
+            telefones.addAll(contact.telefones)
+        }
 
-        binding.updateSaveButton.setOnClickListener { it: View ->
+        // Configura o RecyclerView para mostrar os telefones
+        telefonesAdapter = TelefoneAdapter(telefones, this)
+        binding.telefonesRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.telefonesRecyclerView.adapter = telefonesAdapter
+
+        // Adiciona um novo telefone
+        binding.addContatoBotao.setOnClickListener {
+            val telefone = binding.updateTelefoneContato.text.toString()
+            val tipo = binding.updateTipoContato.text.toString()
+
+            if (telefone.isBlank()) {
+                Toast.makeText(this, "Campo telefone é obrigatório", Toast.LENGTH_SHORT).show()
+            } else if (tipo.isBlank()) {
+                Toast.makeText(this, "Campo tipo é obrigatório", Toast.LENGTH_SHORT).show()
+            } else {
+                // Adiciona o telefone à lista
+                val telefoneC = Telefone(0, contatoId, telefone, tipo)
+                telefones.add(telefoneC)
+                telefonesAdapter.notifyDataSetChanged()
+
+                // Limpa os campos de entrada
+                binding.updateTelefoneContato.text.clear()
+                binding.updateTipoContato.text.clear()
+            }
+        }
+
+        // Salva as alterações
+        binding.updateSaveButton.setOnClickListener {
             val newNome = binding.updateNomeContato.text.toString()
 
-            if(newNome == null || newNome == ""){
-                Toast.makeText(this, "Campo nome é obrigatorio", Toast.LENGTH_SHORT).show()
-            }
-            else{
-                val updatedContato = Contato(contatoId, newNome)
-                db.updateContact(updatedContato)
+            if (newNome.isBlank()) {
+                Toast.makeText(this, "Campo nome é obrigatório", Toast.LENGTH_SHORT).show()
+            } else if (telefones.isEmpty()) {
+                Toast.makeText(this, "O contato precisa ter pelo menos um telefone", Toast.LENGTH_SHORT).show()
+            } else {
+                // Atualiza o contato e a lista de telefones no banco de dados
+                db.updateContact(contatoId, newNome, telefones)
+
                 finish()
                 Toast.makeText(this, "Contato editado com sucesso", Toast.LENGTH_SHORT).show()
             }
-
         }
     }
 }

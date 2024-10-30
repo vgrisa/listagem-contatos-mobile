@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper
 class ContatosDatabase (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
         private const val DATABASE_NAME = "contatosapp.db"
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 4
         private const val TABLE_NAME = "todoscontatos"
         private const val COLUMN_ID = "id"
         private const val COLUMN_NOME = "nome"
@@ -63,7 +63,7 @@ class ContatosDatabase (context: Context) : SQLiteOpenHelper(context, DATABASE_N
     }
 
     fun getAllContacts(): List<Contato> {
-        val notesList = mutableListOf<Contato>()
+        val contatos = mutableListOf<Contato>()
         val db = readableDatabase
         val query = "SELECT * FROM $TABLE_NAME ORDER BY $COLUMN_NOME COLLATE NOCASE ASC"
         val cursor = db.rawQuery(query, null)
@@ -73,68 +73,91 @@ class ContatosDatabase (context: Context) : SQLiteOpenHelper(context, DATABASE_N
             val nome = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NOME))
 
             val contact = Contato(id, nome)
-            notesList.add(contact)
+            contatos.add(contact)
         }
 
         cursor.close()
         db.close()
-        return notesList
+        return contatos
     }
 
-    fun updateContact(contact: Contato) {
+    fun updateContact(contatoId: Int, contatoNome: String, telefones: List<Telefone>) {
         val db = writableDatabase
+
+        // Atualiza o nome do contato
         val values = ContentValues().apply {
-            put(COLUMN_NOME, contact.nome)
+            put(COLUMN_NOME, contatoNome)
         }
-
         val whereClause = "$COLUMN_ID = ?"
-        val whereArgs = arrayOf(contact.id.toString())
+        val whereArgs = arrayOf(contatoId.toString())
         db.update(TABLE_NAME, values, whereClause, whereArgs)
-        db.close()
-    }
 
-    fun getContactByID(contactId: Int): Contato {
-        val db = readableDatabase
-        val query = "SELECT * FROM $TABLE_NAME WHERE $COLUMN_ID = $contactId"
-        val cursor = db.rawQuery(query, null)
-        cursor.moveToFirst()
+        // Remove os telefones antigos do contato
+        val deleteTelefoneClause = "$COLUMN_CLIENTE_ID = ?"
+        db.delete(TABLE_NAME_TELEFONE, deleteTelefoneClause, whereArgs)
 
-        val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID))
-        val nome = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NOME))
-
-        val telefoneList = mutableListOf<Telefone>()
-        val queryTelefone = "SELECT * FROM $TABLE_NAME_TELEFONE ORDER BY $COLUMN_TELEFONE_ID COLLATE NOCASE ASC"
-        val cursorTelefone = db.rawQuery(queryTelefone, null)
-
-        while (cursorTelefone.moveToNext()) {
-            val telefoneId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_TELEFONE_ID))
-            val clienteId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_CLIENTE_ID))
-            val telefone = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TELEFONE))
-            val tipo = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TIPO))
-
-            val telefoneC = Telefone(telefoneId, clienteId, telefone, tipo)
-            telefoneList.add(telefoneC)
+        // Insere a lista atualizada de telefones
+        telefones.forEach { telefone ->
+            val telefoneValues = ContentValues().apply {
+                put(COLUMN_CLIENTE_ID, contatoId)
+                put(COLUMN_TELEFONE, telefone.telefone)
+                put(COLUMN_TIPO, telefone.tipo)
+            }
+            db.insert(TABLE_NAME_TELEFONE, null, telefoneValues)
         }
 
-        cursor.close()
         db.close()
-
-        return Contato(id, nome, telefoneList)
     }
+
+    fun getContactByID(contactId: Int): Contato? {
+        val db = readableDatabase
+        val queryContact = "SELECT * FROM $TABLE_NAME WHERE $COLUMN_ID = ?"
+        val cursor = db.rawQuery(queryContact, arrayOf(contactId.toString()))
+
+        if (cursor.moveToFirst()) {
+            val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID))
+            val nome = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NOME))
+
+            val telefoneList = mutableListOf<Telefone>()
+            val queryTelefone = "SELECT * FROM $TABLE_NAME_TELEFONE WHERE $COLUMN_CLIENTE_ID = ? ORDER BY $COLUMN_TELEFONE_ID ASC"
+            val cursorTelefone = db.rawQuery(queryTelefone, arrayOf(id.toString())) // use id para o cliente
+
+            while (cursorTelefone.moveToNext()) {
+                val telefoneId = cursorTelefone.getInt(cursorTelefone.getColumnIndexOrThrow(COLUMN_TELEFONE_ID))
+                val clienteId = cursorTelefone.getInt(cursorTelefone.getColumnIndexOrThrow(COLUMN_CLIENTE_ID))
+                val telefone = cursorTelefone.getString(cursorTelefone.getColumnIndexOrThrow(COLUMN_TELEFONE))
+                val tipo = cursorTelefone.getString(cursorTelefone.getColumnIndexOrThrow(COLUMN_TIPO))
+
+                val telefoneC = Telefone(telefoneId, clienteId, telefone, tipo)
+                telefoneList.add(telefoneC)
+            }
+
+            cursorTelefone.close() // Fechar o cursor de telefones
+            cursor.close() // Fechar o cursor de contato
+            db.close() // Fechar o banco de dados
+
+            return Contato(id, nome, telefoneList)
+        } else {
+            cursor.close() // Fechar o cursor se não encontrar
+            db.close()
+            return null // Retornar null se não encontrar o contato
+        }
+    }
+
 
     fun deleteContact(contatoId: Int) {
         val db = writableDatabase
+
+        // Deletar os telefones associados ao contato
+        val deleteTelefonesQuery = "DELETE FROM $TABLE_NAME_TELEFONE WHERE $COLUMN_CLIENTE_ID = ?"
+        val telefoneWhereArgs = arrayOf(contatoId.toString())
+        db.execSQL(deleteTelefonesQuery, telefoneWhereArgs)
+
+        // Agora, deletar o contato
         val whereClause = "$COLUMN_ID = ?"
         val whereArgs = arrayOf(contatoId.toString())
-        db.delete(TABLE_NAME, whereClause, whereArgs)
-        db.close()
-    }
+        val deletedRows = db.delete(TABLE_NAME, whereClause, whereArgs)
 
-    fun deleteTelefone(telefoneId: Int, clienteId: Int) {
-        val db = writableDatabase
-        val whereClause = "$COLUMN_TELEFONE_ID = ? AND $COLUMN_CLIENTE_ID = ?"
-        val whereArgs = arrayOf(telefoneId.toString(), clienteId.toString())
-        db.delete(TABLE_NAME_TELEFONE, whereClause, whereArgs)
         db.close()
     }
 }
