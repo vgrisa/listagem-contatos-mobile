@@ -77,6 +77,7 @@ class AddContatos : AppCompatActivity() {
                 binding.telefonesRecyclerView.adapter = telefonesAdapter
 
                 binding.telefoneContato.text.clear()
+                binding.tipoContato.setSelection(0)
             }
         }
     }

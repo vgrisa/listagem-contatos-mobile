@@ -3,6 +3,7 @@ package com.example.contatos
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +22,16 @@ class UpdateContato : AppCompatActivity() {
         setContentView(binding.root)
 
         db = ContatosDatabase(this)
+
+        // Configura o Spinner com os tipos de telefone
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.tipo_contato_options,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.updateTipoContato.adapter = adapter
+        }
 
         // Recupera o contatoId do Intent
         contatoId = intent.getIntExtra("contato_id", -1)
@@ -47,7 +58,7 @@ class UpdateContato : AppCompatActivity() {
         // Adiciona um novo telefone
         binding.addContatoBotao.setOnClickListener {
             val telefone = binding.updateTelefoneContato.text.toString()
-            val tipo = binding.updateTipoContato.text.toString()
+            val tipo = binding.updateTipoContato.selectedItem.toString()
 
             if (telefone.isBlank()) {
                 Toast.makeText(this, "Campo telefone é obrigatório", Toast.LENGTH_SHORT).show()
@@ -61,7 +72,7 @@ class UpdateContato : AppCompatActivity() {
 
                 // Limpa os campos de entrada
                 binding.updateTelefoneContato.text.clear()
-                binding.updateTipoContato.text.clear()
+                binding.updateTipoContato.setSelection(0)
             }
         }
 
