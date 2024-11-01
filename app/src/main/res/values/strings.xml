@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Contatos</string>
+
+    <string-array name="tipo_contato_options">
+        <item>Residencial</item>
+        <item>Comercial</item>
+        <item>Celular</item>
+        <item>Outro</item>
+    </string-array>
+
 </resources>

@@ -1,6 +1,7 @@
 package com.example.contatos
 
 import android.os.Bundle
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +17,6 @@ class AddContatos : AppCompatActivity() {
     private val telefones: MutableList<Telefone> = mutableListOf()
     private lateinit var telefonesAdapter: TelefoneAdapter
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -24,6 +24,16 @@ class AddContatos : AppCompatActivity() {
         setContentView(binding.root)
 
         db = ContatosDatabase(this)
+
+        // Configura o Spinner com os tipos de telefone
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.tipo_contato_options,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.tipoContato.adapter = adapter
+        }
 
         binding.saveButton.setOnClickListener {
             val nome = binding.nomeContato.text.toString()
@@ -52,18 +62,14 @@ class AddContatos : AppCompatActivity() {
 
         binding.addContatoBotao.setOnClickListener {
             val telefone = binding.telefoneContato.text.toString()
-            val tipo = binding.tipoContato.text.toString()
+            val tipo = binding.tipoContato.selectedItem.toString() // Obtém o tipo selecionado do Spinner
 
-            val telefoneC = Telefone(0, 0, telefone, tipo)
-
-
-            if(telefone == null || telefone == ""){
-                Toast.makeText(this, "Campo telefone é obrigatorio", Toast.LENGTH_SHORT).show()
-            }
-            else if(tipo == null || tipo == ""){
-                Toast.makeText(this, "Campo tipo é obrigatorio", Toast.LENGTH_SHORT).show()
-            }
-            else{
+            if (telefone.isBlank()) {
+                Toast.makeText(this, "Campo telefone é obrigatório", Toast.LENGTH_SHORT).show()
+            } else if (tipo.isBlank()) {
+                Toast.makeText(this, "Campo tipo é obrigatório", Toast.LENGTH_SHORT).show()
+            } else {
+                val telefoneC = Telefone(0, 0, telefone, tipo)
                 telefones.add(telefoneC)
 
                 telefonesAdapter = TelefoneAdapter(telefones, this)
@@ -71,9 +77,7 @@ class AddContatos : AppCompatActivity() {
                 binding.telefonesRecyclerView.adapter = telefonesAdapter
 
                 binding.telefoneContato.text.clear()
-                binding.tipoContato.text.clear()
             }
         }
-
     }
 }

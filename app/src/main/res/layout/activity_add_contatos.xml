@@ -51,18 +51,27 @@ tools:context=".AddContatos">
     android:layout_marginTop="16dp"
     android:maxLines="1" />
 
-    <EditText
+<!--    <EditText-->
+<!--        android:id="@+id/tipoContato"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="60dp"-->
+<!--        android:hint="Tipo"-->
+<!--        android:gravity="top"-->
+<!--        android:padding="12dp"-->
+<!--        android:textSize="20sp"-->
+<!--        android:layout_below="@id/telefoneContato"-->
+<!--        android:background="@drawable/borda_azul"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:maxLines="1" />-->
+
+    <Spinner
         android:id="@+id/tipoContato"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:hint="Tipo"
-        android:gravity="top"
-        android:padding="12dp"
-        android:textSize="20sp"
+        android:entries="@array/tipo_contato_options"
         android:layout_below="@id/telefoneContato"
-        android:background="@drawable/borda_azul"
         android:layout_marginTop="16dp"
-        android:maxLines="1" />
+        android:background="@drawable/borda_azul" />
 
     <Button
         android:id="@+id/addContatoBotao"
